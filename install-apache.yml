@@ -2,18 +2,37 @@
 - hosts: all
   become: true
   tasks:
-    - name: update repository index
+# Session 1 , we will write a hardcoded distro code
+# Below listed code will cover debian based systems
+    - name: update repository index "UBUNTU"
       apt:
         update_cache: yes 
-    
-    - name: install apache2 package
+      # when: ansible_distribution == "Ubuntu" and ansible_distribution_version == 18.04
+      when: ansible_distribution in ["Debian","Ubuntu"] 
+    - name: install apache2 package "UBUNTU"
       apt:
         name: apache2
         state: latest
-    - name: install php support
+      when: ansible_distribution in ["Debian","Ubuntu"]
+    - name: install php support "UBUNTU"
       apt:
         name: libapache2-mod-php
         state: latest
-
-
-      
+      when: ansible_distribution in ["Debian","Ubuntu"]
+# Below listed code will cover RPM based systems
+    - name: update repository index "CentOS"
+      dnf:
+        update_cache: yes 
+      when: ansible_distribution == "CentOS"
+      # httpd will not start by default, and firewall will prevent us, i will automate this issues later
+    - name: install apache2 package "CentOS"
+      dnf:
+        name: httpd
+        state: latest
+      when: ansible_distribution == "CentOS"
+    - name: install php support "CentOS"
+      dnf:
+        name: php
+        state: latest
+      when: ansible_distribution == "CentOS"
+    
