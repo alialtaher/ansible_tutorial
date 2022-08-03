@@ -1,0 +1,39 @@
+# Targeting specific nodes
+---
+- hosts: all
+  become: true
+  pre_tasks:
+  - name: install updates "CentOS" 
+    dnf:
+      update_only : yes
+      update_cache : yes
+    when: ansible_distribution == "CentOS"
+  - name: install updates "Ubuntu" 
+    apt:
+      upgrade : dist
+      update_cache : yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: web_servers
+  become: true
+  tasks:
+  - name: install web server and php
+    package: 
+      name:
+        - "{{apache_package}}"
+        - "{{php_package}}"
+      state: latest
+- hosts: db_servers
+  become: true
+  tasks:
+  - name: install database
+    package:
+      name: "{{database_package}}"
+      state: latest
+- hosts: file_servers
+  become: true
+  tasks:
+  - name: install file server
+    package:
+      name: "{{fileserver_package}}"
+      state: latest

@@ -1,3 +1,6 @@
+[web_servers]
 centos1         apache_package=httpd php_package=php
-kubemaster      apache_package=apache2 php_package=libapache2-mod-php
-kubeworker1     apache_package=apache2 php_package=libapache2-mod-php
+[db_servers]
+kubemaster      apache_package=apache2 php_package=libapache2-mod-php database_package=mariadb-server
+[file_servers]
+kubeworker1     apache_package=apache2 php_package=libapache2-mod-php fileserver_package=samba
