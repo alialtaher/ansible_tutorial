@@ -4,11 +4,13 @@
   become: true
   pre_tasks:
   - name: install updates "CentOS" 
+    tags: always
     dnf:
       update_only : yes
       update_cache : yes
     when: ansible_distribution == "CentOS"
   - name: install updates "Ubuntu" 
+    tags: always
     apt:
       upgrade : dist
       update_cache : yes
@@ -18,6 +20,7 @@
   become: true
   tasks:
   - name: install web server and php
+    tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU
     package: 
       name:
         - "{{apache_package}}"
@@ -27,6 +30,7 @@
   become: true
   tasks:
   - name: install database
+    tags: mariadb, CentOS, UBUNTU
     package:
       name: "{{database_package}}"
       state: latest
@@ -34,6 +38,7 @@
   become: true
   tasks:
   - name: install file server
+    tags: samba
     package:
       name: "{{fileserver_package}}"
       state: latest

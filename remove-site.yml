@@ -1,0 +1,29 @@
+# Targeting specific nodes
+---  
+  
+- hosts: web_servers
+  become: true
+  tasks:
+  - name: Remove web server and php
+    tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU
+    package: 
+      name:
+        - "{{apache_package}}"
+        - "{{php_package}}"
+      state: absent
+- hosts: db_servers
+  become: true
+  tasks:
+  - name: Remove database
+    tags: mariadb, CentOS, UBUNTU
+    package:
+      name: "{{database_package}}"
+      state: absent
+- hosts: file_servers
+  become: true
+  tasks:
+  - name: Remove file server
+    tags: samba, UBUNTU
+    package:
+      name: "{{fileserver_package}}"
+      state: absent
