@@ -59,12 +59,20 @@
       owner: root
       group: root
       mode: 0644
-  - name: Start service httpd, if not started
+  - name: change email address for admin
+    tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU, changeAdminEmail
+    lineinfile:
+      path: '{{conf_path}}'
+      regexp: '^ServerAdmin'
+      line: ServerAdmin alialt2@test.com
+    register: change_state
+  - name: Restart service httpd, if not started
     tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU
-    ansible.builtin.service:
-      name: httpd
-      state: started
-    when: ansible_distribution == CentOS
+    service:
+      name: '{{apache_package}}'
+      state: restarted
+      enabled: yes
+    when: change_state.changed    
   - name: permit traffic in default zone on port 80/tcp
     tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU, enable_fw
     ansible.posix.firewalld:
