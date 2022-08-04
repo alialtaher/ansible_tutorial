@@ -3,6 +3,11 @@
 - hosts: all
   become: true
   pre_tasks:
+  - name: install dnf "CentOS"
+    tags: workstation
+    package:
+      name: dnf
+    when: ansible_distribution == "CentOS"
   - name: install updates "CentOS" 
     tags: always
     dnf:
@@ -15,7 +20,27 @@
       upgrade : dist
       update_cache : yes
     when: ansible_distribution == "Ubuntu"
+- hosts: workstation
+  become: true
+  tasks:
+    - name: install Unzip
+      tags: workstation
+      package:
+        name: dnf
 
+    - name: install Unzip
+      tags: workstation
+      package:
+        name: unzip
+    - name: install terraform
+      tags: workstation
+      unarchive:
+        src: https://releases.hashicorp.com/terraform/1.2.6/terraform_1.2.6_linux_386.zip
+        dest: /usr/local/bin
+        remote_src: yes
+        mode: 0755
+        owner: root
+        group: root
 - hosts: web_servers
   become: true
   tasks:
