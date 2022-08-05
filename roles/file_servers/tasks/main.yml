@@ -1,0 +1,5 @@
+- name: install file server
+  tags: samba
+  package:
+    name: "{{fileserver_package}}"
+    state: latest

@@ -1,0 +1,37 @@
+- name: install web server and php
+  tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU
+  package:
+    name:
+      - "{{apache_package}}"
+      - "{{php_package}}"
+    state: latest
+- name: copy default html page to agent
+  tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU
+  copy:
+    src: default_site.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: 0644
+- name: change email address for admin
+  tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU, changeAdminEmail
+  lineinfile:
+    path: "{{conf_path}}"
+    regexp: "^ServerAdmin"
+    line: ServerAdmin alialt2@test.com
+  register: change_state
+- name: Restart service httpd, if not started
+  tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU
+  service:
+    name: "{{apache_package}}"
+    state: restarted
+    enabled: yes
+  when: change_state.changed
+- name: permit traffic in default zone on port 80/tcp
+  tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU, enable_fw
+  ansible.posix.firewalld:
+    port: 80/tcp
+    permanent: yes
+    immediate: yes
+    state: enabled
+  when: ansible_distribution == "CentOS"

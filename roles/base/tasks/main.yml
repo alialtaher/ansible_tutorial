@@ -1,0 +1,10 @@
+- name: install dnf "CentOS"
+  tags: workstation
+  package:
+    name: dnf
+  when: ansible_distribution == "CentOS"
+- name: install updates
+  tags: always
+  package:
+    update_cache: yes
+  changed_when: false

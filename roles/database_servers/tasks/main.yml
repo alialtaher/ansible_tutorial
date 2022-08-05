@@ -1,0 +1,5 @@
+- name: install database
+  tags: mariadb, CentOS, UBUNTU
+  package:
+    name: "{{database_package}}"
+    state: latest

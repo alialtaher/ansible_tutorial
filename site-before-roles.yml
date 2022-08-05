@@ -1,0 +1,92 @@
+# Targeting specific nodes
+---
+- hosts: all
+  become: true
+  pre_tasks:
+  - name: install dnf "CentOS"
+    tags: workstation
+    package:
+      name: dnf
+    when: ansible_distribution == "CentOS"
+  - name: install updates "CentOS" 
+    tags: always
+    package:
+      update_cache : yes
+    changed_when: false
+- hosts: workstation
+  become: true
+  tasks:
+    - name: install Unzip
+      tags: workstation
+      package:
+        name: dnf
+
+    - name: install Unzip
+      tags: workstation
+      package:
+        name: unzip
+    - name: install terraform
+      tags: workstation
+      unarchive:
+        src: https://releases.hashicorp.com/terraform/1.2.6/terraform_1.2.6_linux_386.zip
+        dest: /usr/local/bin
+        remote_src: yes
+        mode: 0755
+        owner: root
+        group: root
+- hosts: web_servers
+  become: true
+  tasks:
+  - name: install web server and php
+    tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU
+    package: 
+      name:
+        - "{{apache_package}}"
+        - "{{php_package}}"
+      state: latest
+  - name: copy default html page to agent
+    tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU
+    copy:
+      src: default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+  - name: change email address for admin
+    tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU, changeAdminEmail
+    lineinfile:
+      path: '{{conf_path}}'
+      regexp: '^ServerAdmin'
+      line: ServerAdmin alialt2@test.com
+    register: change_state
+  - name: Restart service httpd, if not started
+    tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU
+    service:
+      name: '{{apache_package}}'
+      state: restarted
+      enabled: yes
+    when: change_state.changed    
+  - name: permit traffic in default zone on port 80/tcp
+    tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU, enable_fw
+    ansible.posix.firewalld:
+      port: 80/tcp
+      permanent: yes
+      immediate: yes      
+      state: enabled
+    when: ansible_distribution == "CentOS"
+- hosts: db_servers
+  become: true
+  tasks:
+  - name: install database
+    tags: mariadb, CentOS, UBUNTU
+    package:
+      name: "{{database_package}}"
+      state: latest
+- hosts: file_servers
+  become: true
+  tasks:
+  - name: install file server
+    tags: samba
+    package:
+      name: "{{fileserver_package}}"
+      state: latest
