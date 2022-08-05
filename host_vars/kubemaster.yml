@@ -3,3 +3,5 @@ php_package: libapache2-mod-php
 fileserver_package: samba
 database_package: mariadb-server 
 conf_path: "/etc/apache2/conf-available/security.conf"
+ssh_users: "user1, alialt"
+ssh_template_file: sshd_config_ubuntu.j2
