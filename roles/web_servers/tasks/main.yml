@@ -19,14 +19,8 @@
     path: "{{conf_path}}"
     regexp: "^ServerAdmin"
     line: ServerAdmin alialt2@test.com
-  register: change_state
-- name: Restart service httpd, if not started
-  tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU
-  service:
-    name: "{{apache_package}}"
-    state: restarted
-    enabled: yes
-  when: change_state.changed
+  notify: restart_apache
+
 - name: permit traffic in default zone on port 80/tcp
   tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU, enable_fw
   ansible.posix.firewalld:

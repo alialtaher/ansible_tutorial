@@ -1,0 +1,7 @@
+- name: Restart service httpd, if not started
+  tags: apache, httpd, php, libapache2-mod-php, CentOS , UBUNTU
+  service:
+    name: "{{apache_package}}"
+    state: restarted
+    enabled: yes
+  when: change_state.changed

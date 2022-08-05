@@ -1,0 +1,4 @@
+apache_package: apache2
+php_package: libapache2-mod-php 
+fileserver_package: samba
+conf_path: "/etc/httpd/conf/httpd.conf"

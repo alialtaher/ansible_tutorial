@@ -1,11 +1,13 @@
 [web_servers]
-centos1         apache_package=httpd php_package=php conf_path="/etc/httpd/conf/httpd.conf"
-kubemaster      apache_package=apache2 php_package=libapache2-mod-php database_package=mariadb-server conf_path="/etc/apache2/conf-available/security.conf"
+centos1         
+
+kubemaster      
+
 [db_servers]
-kubemaster      apache_package=apache2 php_package=libapache2-mod-php database_package=mariadb-server conf_path="/etc/apache2/conf-available/security.conf"
+kubemaster
 
 [file_servers]
-kubeworker1     apache_package=apache2 php_package=libapache2-mod-php fileserver_package=samba
+kubeworker1     
 
 [workstation]
 workstation_host
